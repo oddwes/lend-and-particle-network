@@ -12,7 +12,7 @@ import { EntryPosition, wallet } from '@particle-network/connectkit/wallet';
 import { aa } from '@particle-network/connectkit/aa';
 // aa end
 // evm start
-import { arbitrum, base, lineaSepolia, mainnet, polygon } from '@particle-network/connectkit/chains';
+import { arbitrum, base, sepolia, mainnet, polygon } from '@particle-network/connectkit/chains';
 import { evmWalletConnectors } from '@particle-network/connectkit/evm';
 // evm end
 
@@ -28,7 +28,7 @@ if (!projectId || !clientKey || !appId) {
 
 const supportChains: Chain[] = [];
 // evm start
-supportChains.push(mainnet, base, arbitrum, polygon, lineaSepolia);
+supportChains.push(mainnet, base, arbitrum, polygon, sepolia);
 // evm end
 
 
@@ -57,7 +57,7 @@ const config = createConfig({
       walletConnectProjectId: walletConnectProjectId,
     }),
     // evm end
-    
+
   ],
   plugins: [
     // embedded wallet start
@@ -66,14 +66,14 @@ const config = createConfig({
       entryPosition: EntryPosition.BR,
     }),
     // embedded wallet end
-    
+
     // aa config start
     aa({
       name: 'BICONOMY',
       version: '2.0.0',
     }),
     // aa config end
-  
+
   ],
   chains: supportChains as unknown as readonly [Chain, ...Chain[]],
 });
