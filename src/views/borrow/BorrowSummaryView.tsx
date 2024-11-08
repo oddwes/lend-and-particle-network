@@ -19,6 +19,7 @@ import { getChainInfo } from "../../utils/chains";
 import TransactionButton from "../../components/TxButton";
 import Confetti from "react-confetti";
 import { Button } from "../../components/Button";
+import { useSmartAccount } from "@particle-network/connectkit";
 
 interface BorrowSummaryViewProps {
   requiredCollateral: ethers.BigNumber;
@@ -37,12 +38,12 @@ export const BorrowSummaryView: FC<BorrowSummaryViewProps> = ({
   interestRate,
   amount,
 }) => {
-  const router = useRouter();
+  // const router = useRouter();
   const [localError, setLocalError] = useState("");
   const handleErrorMessages = handleErrorMessagesFactory(setLocalError);
 
   const handleViewDash = async () => {
-    await router.push("/dashboard");
+    // await router.push("/dashboard");
   };
   const { store, dispatch } = useFinancialData();
   const [borrowActionInitiated, setBorrowActionInitiated] = useState(false);
@@ -52,7 +53,18 @@ export const BorrowSummaryView: FC<BorrowSummaryViewProps> = ({
   const [latestBorrowId, setLatestBorrowId] = useState<string>();
   const [txHash, setTxHash] = useState<string | null>(null);
 
-  const walletAddress = useAddress();
+  const smartAccount = useSmartAccount();
+  const [walletAddress, setWalletAddress] = useState()
+  useEffect(() => {
+    const fetchAddress = async () => {
+      if(!smartAccount) {
+        return
+      }
+      const address = await smartAccount.getAddress()
+      setWalletAddress(address)
+    }
+    fetchAddress()
+  }, [])
 
   // Calculate the end date by adding the number of months to the current date
   const currentDate = new Date();

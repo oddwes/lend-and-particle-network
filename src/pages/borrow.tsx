@@ -6,7 +6,6 @@ import { BorrowSummaryView } from "../views/borrow/BorrowSummaryView";
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { Zero } from "../constants";
-import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { getChainInfo } from "@/utils/chains";
 
 const Borrow: NextPage = (props) => {

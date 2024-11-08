@@ -20,6 +20,7 @@ import { getChainInfo } from "../../utils/chains";
 import Tooltip from "../../components/Tooltip";
 import { InterestRateButton } from "./InterestRateButton";
 import { Button } from "../../components/Button";
+import { useAccount, useAddress, usePublicClient, useSmartAccount } from "@particle-network/connectkit";
 
 interface BorrowViewProps {
   onBorrowViewChange: (interestRate, amount) => void;
@@ -44,10 +45,12 @@ export const BorrowView: React.FC<BorrowViewProps> = ({
     setError: setBorrowError,
     clearError: clearBorrowError,
   } = useValidation();
-  const ethBalanceIsLoading = true
-  const ethBalance = 0
-  // const { data: ethBalance, isLoading: ethBalanceIsLoading } =
-  //   useBalance(NATIVE_TOKEN_ADDRESS);
+
+  const smartAccount = useSmartAccount();
+  const publicClient = usePublicClient();
+
+  const ethBalanceIsLoading = false
+  const [ethBalance, setEthBalance] = useState(0)
   const [maxBorrow, setMaxBorrow] = useState(ethers.utils.parseEther("0"));
   const [borrowAmount, setBorrowAmount] = useState("");
   const [displayAmount, setDisplayAmount] = useState("");
@@ -55,17 +58,26 @@ export const BorrowView: React.FC<BorrowViewProps> = ({
   const [lendingPlatform, setLendingPlatform] = useState()
   const lendingPlatformIsLoading = false
   const lendingPlatformError = null
+
   useEffect(() => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    setLendingPlatform(new ethers.Contract(lendingPlatformAddress, lendingPlatformAbi, provider))
-  }, [])
+    const lendingPlatform = new ethers.Contract(lendingPlatformAddress, lendingPlatformAbi, provider)
+    setLendingPlatform(lendingPlatform)
+
+    const fetchBalance = async () => {
+      if(!smartAccount) {
+        return
+      }
+      const address = await smartAccount.getAddress()
+      const balanceResponse = await publicClient?.getBalance({
+          address,
+      });
+      setEthBalance(balanceResponse)
+    };
+    fetchBalance()
+  }, [smartAccount])
 
   const [selectedInterestRate, setSelectedInterestRate] = useState("8");
-  // const {
-  //   contract: lendingPlatform,
-  //   isLoading: lendingPlatformIsLoading,
-  //   error: lendingPlatformError,
-  // } = useContract(lendingPlatformAddress, lendingPlatformAbi);
 
   const format = (val: string) => val;
   const isValidationError = !!borrowErrors.borrow;
@@ -172,10 +184,7 @@ export const BorrowView: React.FC<BorrowViewProps> = ({
     async function determineRequiredCollateral() {
       const ltv = interestToLTV[selectedInterestRate];
       const usdcUnits = ethers.utils.parseUnits(borrowAmount, 6); // Use raw value for calculations
-      const coll: BigNumber = await lendingPlatform.requiredCollateral(
-        ltv,
-        usdcUnits,
-      );
+      const coll: BigNumber = await lendingPlatform.requiredCollateral(ltv, usdcUnits);
       // Add the exchange rate buffer to the requiredCollateral
       return roundEth(
         percentMul(coll, ONE_HUNDRED_PERCENT.add(EXCHANGE_RATE_BUFFER)),
@@ -224,7 +233,7 @@ export const BorrowView: React.FC<BorrowViewProps> = ({
     }
     const maxBorrow: BigNumber = await lendingPlatform.maxBorrow(
       interestToLTV[selectedInterestRate],
-      ethBalance.value,
+      ethBalance,
     );
     return maxBorrow;
   }
