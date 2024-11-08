@@ -9,10 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.9.2",
+    "@ethereumjs/common": "^4.4.0",
     "@particle-network/connectkit": "^2.0.9",
+    "@particle-network/thresh-sig": "^0.7.8",
+    "@tailwindcss/typography": "^0.5.15",
+    "@thirdweb-dev/react": "3.14.17",
+    "daisyui": "^4.12.14",
+    "ethers": "5",
+    "graphql": "^16.9.0",
     "next": "14.2.5",
     "react": "^18",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18",
+    "tailwind": "^4.0.0",
     "viem": "2"
   },
   "devDependencies": {
