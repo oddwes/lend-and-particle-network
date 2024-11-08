@@ -3,19 +3,21 @@
 import Header from '@/components/header';
 import { useAccount } from '@particle-network/connectkit';
 import { isEVMChain } from '@particle-network/connectkit/chains';
-import styles from './index.module.css';
+import Borrow from './pages/borrow';
+
+import './index.css';
 
 export default function Index() {
   const { isConnected, chain } = useAccount();
 
   return (
-    <>
+    <div>
       <Header />
-      <main className={styles['main-content']}>
+      <div>
         {isConnected && chain && isEVMChain(chain) && (
-          <></>
+          <Borrow />
         )}
-      </main>
-    </>
+      </div>/
+    </div>
   );
 }

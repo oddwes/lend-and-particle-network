@@ -3,11 +3,14 @@ import Head from "next/head";
 import { BorrowView } from "../views/borrow/BorrowView";
 import { BorrowDurationView } from "../views/borrow/BorrowDurationView";
 import { BorrowSummaryView } from "../views/borrow/BorrowSummaryView";
-import { useState } from "react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import { Zero } from "../constants";
+import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { getChainInfo } from "@/utils/chains";
 
 const Borrow: NextPage = (props) => {
+  const { subgraphUrl, thirdwebActiveChain } = getChainInfo();
   const [requiredCollateral, setRequiredCollateral] =
     useState<ethers.BigNumber>(Zero);
   const [timestamp, setTimestamp] = useState(0);
@@ -47,7 +50,7 @@ const Borrow: NextPage = (props) => {
   };
 
   return (
-    <>
+    <div>
       <Head>
         <title>Shrub Lend - Borrow</title>
         <meta name="description" content="Shrub Lend" />
@@ -78,7 +81,7 @@ const Borrow: NextPage = (props) => {
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 

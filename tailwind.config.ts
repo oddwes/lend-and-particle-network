@@ -1,15 +1,21 @@
-import type { Config } from 'tailwindcss';
+const sharedConfig = require('./tailwind.shared.config.js');
 
-const config: Config = {
-  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}', './app/**/*.{js,ts,jsx,tsx,mdx}'],
-  theme: {
-    extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
-    },
+module.exports = {
+  ...sharedConfig,
+  mode: "jit",
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "media",
+  plugins: [
+    require('daisyui'),
+    require("@tailwindcss/typography")
+  ],
+  daisyui: {
+    styled: true,
+    themes: [
+    ],
+    base: true,
+    utils: true,
+    logs: true,
+    rtl: false,
   },
-  plugins: [],
-};
-export default config;
+}
